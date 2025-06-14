@@ -6,19 +6,27 @@ const Stopwatch = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [status, setStatus] = useState('reset'); // running, paused, reset
 
+  // Timer Logic
   useEffect(() => {
     let interval;
     if (isRunning) {
-      setStatus('running');
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
-    } else if (status === 'running') {
-      setStatus('paused');
     }
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  // Status Logic
+  useEffect(() => {
+    if (isRunning) {
+      setStatus('running');
+    } else {
+      setStatus((prev) => (prev === 'running' ? 'paused' : prev));
+    }
+  }, [isRunning]);
+
+  // Format Time as MM:SS
   const formatTime = (seconds) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
     const secs = String(seconds % 60).padStart(2, '0');
